@@ -1,0 +1,836 @@
+
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ChemRate — Chemical Reaction Rate Analyzer</title>
+
+    <link
+        rel="stylesheet"
+        href="/app/style.css"
+    >
+
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header class="site-header">
+
+        <div class="header-content">
+
+            <div class="brand-icon">
+                🧪
+            </div>
+
+            <div>
+
+                <h1>ChemRate</h1>
+
+                <p>
+                    Chemical Reaction Rate Analyzer
+                </p>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main class="container">
+
+
+        <!-- =========================
+             DASHBOARD
+        ========================== -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>How to Use</h2>
+
+            </div>
+
+
+            <ol class="instructions">
+
+                <li>
+                    กรอกข้อมูลการทดลอง
+                </li>
+
+                <li>
+                    กรอก Time และ Concentration
+                </li>
+
+                <li>
+                    กรอก Concentration [A]
+                    และ Reaction Rate
+                    สำหรับ Reaction Order
+                </li>
+
+                <li>
+                    กด Analyze
+                </li>
+
+                <li>
+                    ระบบจะคำนวณ Reaction Rate,
+                    Reaction Order, k และ R²
+                </li>
+
+            </ol>
+
+        </section>
+
+<section class="section">
+
+            <div class="section-heading">
+
+                <h2>Dashboard</h2>
+
+                <p>
+                    ภาพรวมผลการทดลองล่าสุด
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-grid">
+
+
+                <div class="stat-card">
+
+                    <span>
+                        Total Experiments
+                    </span>
+
+                    <strong id="totalExperiments">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        Average Rate
+                    </span>
+
+                    <strong id="dashboardRate">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        Reaction Order
+                    </span>
+
+                    <strong id="dashboardOrder">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        R²
+                    </span>
+
+                    <strong id="dashboardR2">
+                        -
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             EXPERIMENT INFORMATION
+        ========================== -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>Experiment Information</h2>
+
+                <p>
+                    ข้อมูลพื้นฐานของการทดลอง
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label for="substance">
+                        Substance
+                    </label>
+
+                    <input
+                        type="text"
+                        id="substance"
+                        placeholder="เช่น Reactant A"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="temperature">
+                        Temperature (°C)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="temperature"
+                        placeholder="25"
+                        step="any"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="concentrationUnit">
+                        Concentration Unit
+                    </label>
+
+                    <select id="concentrationUnit">
+
+                        <option value="mol/L">
+                            mol/L
+                        </option>
+
+                        <option value="mol/mL">
+                            mol/mL
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="timeUnit">
+                        Time Unit
+                    </label>
+
+                    <select id="timeUnit">
+
+                        <option value="s">
+                            s
+                        </option>
+
+                        <option value="min">
+                            min
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             EXPERIMENT DATA
+        ========================== -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>Experiment Data</h2>
+
+                <p>
+                    กรอกข้อมูลเวลาและความเข้มข้น
+                    โดยคั่นค่าด้วยเครื่องหมาย comma (,)
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label for="time">
+                        Time
+                    </label>
+
+                    <textarea
+                        id="time"
+                        placeholder="0, 10, 20, 30, 40"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="concentration">
+                        Concentration
+                    </label>
+
+                    <textarea
+                        id="concentration"
+                        placeholder="1.00, 0.80, 0.65, 0.55, 0.48"
+                    ></textarea>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             REACTION ORDER DATA
+        ========================== -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>Reaction Order Analysis</h2>
+
+                <p>
+                    ข้อมูลความเข้มข้นและอัตราการเกิดปฏิกิริยา
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label for="concentrationExp">
+                        Concentration [A]
+                    </label>
+
+                    <textarea
+                        id="concentrationExp"
+                        placeholder="0.10, 0.20, 0.30, 0.40, 0.50"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="rateExp">
+                        Reaction Rate
+                    </label>
+
+                    <textarea
+                        id="rateExp"
+                        placeholder="0.010, 0.040, 0.090, 0.160, 0.250"
+                    ></textarea>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             ACTIONS
+        ========================== -->
+
+        <section class="action-section">
+
+            <button
+                id="analyzeBtn"
+                type="button"
+            >
+                Analyze
+            </button>
+
+
+            <button
+                id="resetBtn"
+                type="button"
+            >
+                Reset
+            </button>
+
+
+            <button
+                id="exportBtn"
+                type="button"
+            >
+                Export CSV
+            </button>
+
+
+            <p
+                id="statusMessage"
+                class="status-message"
+            ></p>
+
+        </section>
+
+
+        <!-- =========================
+             RESULTS
+        ========================== -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>Analysis Results</h2>
+
+                <p>
+                    ผลการวิเคราะห์ทางเคมี
+                </p>
+
+            </div>
+
+
+            <div class="results-grid">
+
+
+                <div class="result-card">
+
+                    <span>
+                        Average Reaction Rate
+                    </span>
+
+                    <strong id="averageRate">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="result-card">
+
+                    <span>
+                        Reaction Order (n)
+                    </span>
+
+                    <strong id="reactionOrder">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="result-card">
+
+                    <span>
+                        Rate Constant (k)
+                    </span>
+
+                    <strong id="rateConstant">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="result-card">
+
+                    <span>
+                        R²
+                    </span>
+
+                    <strong id="rSquared">
+                        -
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             GRAPH
+        ========================== -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>Concentration vs Time</h2>
+
+                <p>
+                    การเปลี่ยนแปลงความเข้มข้นตามเวลา
+                </p>
+
+            </div>
+
+
+            <div class="charts-grid">
+
+                <div class="chart-container">
+
+                    <h3>Concentration vs Time</h3>
+
+                    <canvas
+                        id="concentrationChart"
+                    ></canvas>
+
+                </div>
+
+
+                <div class="chart-container">
+
+                    <h3>Reaction Rate vs Time</h3>
+
+                    <canvas
+                        id="rateChart"
+                    ></canvas>
+
+                </div>
+
+
+                <div class="chart-container">
+
+                    <h3>ln[A] vs Time</h3>
+
+                    <canvas
+                        id="lnChart"
+                    ></canvas>
+
+                </div>
+
+
+                <div class="chart-container">
+
+                    <h3>1/[A] vs Time</h3>
+
+                    <canvas
+                        id="inverseChart"
+                    ></canvas>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             SCIENTIFIC SUMMARY
+        ========================== -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>Scientific Summary</h2>
+
+                <p>
+                    สรุปผลการวิเคราะห์ทางวิทยาศาสตร์
+                </p>
+
+            </div>
+
+
+            <div class="summary-box">
+
+                <div class="summary-item">
+
+                    <span class="summary-label">
+                        Rate Equation
+                    </span>
+
+                    <span
+                        id="rateEquation"
+                        class="summary-value"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <span class="summary-label">
+                        Reaction Order
+                    </span>
+
+                    <span
+                        id="summaryOrder"
+                        class="summary-value"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <span class="summary-label">
+                        Rate Constant (k)
+                    </span>
+
+                    <span
+                        id="summaryK"
+                        class="summary-value"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <span class="summary-label">
+                        R²
+                    </span>
+
+                    <span
+                        id="summaryR2"
+                        class="summary-value"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <span class="summary-label">
+                        Fit Quality
+                    </span>
+
+                    <span
+                        id="fitQuality"
+                        class="summary-value"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             EXPERIMENTAL DATA TABLE
+        ========================== -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>Experimental Data</h2>
+
+                <p>
+                    ตารางข้อมูลการทดลองและอัตราการเกิดปฏิกิริยา
+                </p>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table id="dataTable">
+
+                    <thead>
+
+                        <tr>
+                            <th>Point</th>
+                            <th>Time</th>
+                            <th>Concentration</th>
+                            <th>Reaction Rate</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="dataTableBody">
+
+                        <tr>
+                            <td colspan="4">
+                                ยังไม่มีข้อมูลการทดลอง
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             EXPERIMENTAL DATA TABLE
+        ========================== -->
+
+        
+
+
+        <!-- =========================
+             HISTORY
+        ========================== -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>Experiment History</h2>
+
+                <p id="historyStatus">
+                    กำลังโหลดประวัติ...
+                </p>
+
+            </div>
+
+
+            <div class="history-actions">
+
+                <button
+                    id="historyBtn"
+                    type="button"
+                >
+                    Refresh History
+                </button>
+
+
+                <button
+                    id="clearHistoryBtn"
+                    type="button"
+                >
+                    Clear History
+                </button>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table id="historyTable">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Substance</th>
+
+                            <th>Temperature</th>
+
+                            <th>Average Rate</th>
+
+                            <th>Order</th>
+
+                            <th>k</th>
+
+                            <th>R²</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="historyBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             HOW TO USE
+        ========================== -->
+
+        
+
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <p>
+            ChemRate — Chemical Reaction Rate Analyzer
+        </p>
+
+        <p>
+            Python + FastAPI + NumPy + SciPy + SQLite
+        </p>
+
+    </footer>
+
+
+    <!-- Chart.js -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js"
+    ></script>
+
+
+    <!-- ChemRate JavaScript -->
+
+    <script
+        src="/app/script.js"
+    ></script>
+
+</body>
+
+</html>
